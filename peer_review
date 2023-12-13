@@ -1,0 +1,84 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+
+class Readers{
+public:
+    Readers(){
+        number_of_readers_read_page_.resize(1001);
+        readers_read_pages_.resize(100001);
+
+        for(int i =0; i<100000; i++){
+            readers_read_pages_[i] = 0;
+            if(i<1000){
+                number_of_readers_read_page_[i] = 0;
+            }
+        }
+        all_readers_count_ = 0;
+    }
+
+    void Read(int user, int pages){
+        if(readers_read_pages_[user] == 0){
+            all_readers_count_++;
+        }
+        int number_of_page_read_reader = readers_read_pages_[user]+1;
+        for(int i = number_of_page_read_reader; i<=pages; i++){
+            number_of_readers_read_page_[i]++;
+        }
+        readers_read_pages_[user] = pages;
+
+    }
+
+    double Cheer(int user){
+        double user_place;
+        if(readers_read_pages_[user] == 0){
+           return 0;
+        }
+
+        if(all_readers_count_ == 1){
+            return 1;
+        }
+        int nfrrp =  number_of_readers_read_page_[readers_read_pages_[user]];
+        if(nfrrp == all_readers_count_){
+            return 0;
+        } else if(nfrrp == 1){
+            return 1;
+        }
+        user_place = double(all_readers_count_ - nfrrp)/(all_readers_count_-1);
+         return user_place;
+    }
+
+private:
+    vector<int> readers_read_pages_;
+    vector<int> number_of_readers_read_page_;
+    int all_readers_count_ = 0;
+
+};
+
+int main()
+{
+    Readers readers;
+    int request_count;
+    cin>>request_count;
+    for(int i=0; i<request_count; i++){
+        string request;
+        cin>>request;
+        if(request == "READ"s){
+            int user, page;
+            cin>>user>>page;
+            readers.Read(user, page);
+
+        } else {
+            int user;
+            cin>>user;
+            cout<<setprecision(6)<<readers.Cheer(user)<<endl;
+        }
+    }
+
+    cout<<endl;
+
+}
